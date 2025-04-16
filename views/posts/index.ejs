@@ -1,0 +1,57 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col">
+            <h1>Blog Posts</h1>
+        </div>
+        <% if (session.userId) { %>
+            <div class="col-auto">
+                <a href="/posts/new" class="btn btn-primary">Create New Post</a>
+            </div>
+        <% } %>
+    </div>
+
+    <div class="row">
+        <% if (posts && posts.length > 0) { %>
+            <% posts.forEach(post => { %>
+                <div class="col-md-6 mb-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                <a href="/posts/<%= post._id %>" class="text-decoration-none">
+                                    <%= post.title %>
+                                </a>
+                            </h5>
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                By <%= post.author.username %> | 
+                                <%= new Date(post.createdAt).toLocaleDateString() %>
+                            </h6>
+                            <p class="card-text">
+                                <%= post.content.substring(0, 200) %>...
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <% if (post.tags && post.tags.length > 0) { %>
+                                        <% post.tags.forEach(tag => { %>
+                                            <span class="badge bg-secondary me-1"><%= tag %></span>
+                                        <% }); %>
+                                    <% } %>
+                                </div>
+                                <a href="/posts/<%= post._id %>" class="btn btn-outline-primary btn-sm">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        <% } else { %>
+            <div class="col">
+                <div class="alert alert-info">
+                    No posts found. Be the first to create a post!
+                </div>
+            </div>
+        <% } %>
+    </div>
+</div>
+
+<%- include('../partials/footer') %> 

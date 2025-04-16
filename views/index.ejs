@@ -1,0 +1,18 @@
+<%- include('partials/header') %>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8 text-center">
+            <h1 class="display-4 mb-4">Welcome to Our Blog</h1>
+            <p class="lead">Share your thoughts and connect with others.</p>
+            <div class="mt-4">
+                <a href="/posts" class="btn btn-primary btn-lg me-3">View Posts</a>
+                <% if (!session.userId) { %>
+                    <a href="/auth/register" class="btn btn-outline-primary btn-lg">Join Now</a>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('partials/footer') %> 

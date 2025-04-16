@@ -8,17 +8,25 @@ require('dotenv').config();
 
 const app = express();
 
+// Import routes
+const authRoutes = require('./routes/authRoutes');
+const postRoutes = require('./routes/postRoutes');
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(methodOverride('_method'));
 
 // Session configuration
 app.use(session({
     secret: process.env.SESSION_SECRET || 'your-secret-key',
     resave: false,
-    saveUninitialized: false
+    saveUninitialized: false,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production',
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
 }));
 
 // Flash messages
@@ -33,12 +41,31 @@ app.use((req, res, next) => {
     res.locals.success_msg = req.flash('success_msg');
     res.locals.error_msg = req.flash('error_msg');
     res.locals.error = req.flash('error');
+    res.locals.session = req.session;
     next();
 });
 
-// Routes (we'll add these later)
+// Routes
+app.use('/auth', authRoutes);
+app.use('/posts', postRoutes);
+
+// Home route
 app.get('/', (req, res) => {
-    res.render('index', { title: 'Blog Home' });
+    res.render('index', { title: 'Home' });
+});
+
+// 404 handler
+app.use((req, res) => {
+    res.status(404).render('404', { title: 'Page Not Found' });
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).render('error', { 
+        title: 'Error',
+        message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong!'
+    });
 });
 
 // MongoDB connection

@@ -1,0 +1,80 @@
+<%- include('../partials/header') %>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h1 class="card-title"><%= post.title %></h1>
+                    <div class="text-muted mb-3">
+                        By <%= post.author.username %> | 
+                        <%= new Date(post.createdAt).toLocaleDateString() %>
+                    </div>
+                    <div class="mb-3">
+                        <% if (post.tags && post.tags.length > 0) { %>
+                            <% post.tags.forEach(tag => { %>
+                                <span class="badge bg-secondary me-1"><%= tag %></span>
+                            <% }); %>
+                        <% } %>
+                    </div>
+                    <div class="card-text">
+                        <%= post.content %>
+                    </div>
+                    <% if (session.userId && session.userId === post.author._id.toString()) { %>
+                        <div class="mt-4">
+                            <a href="/posts/<%= post._id %>/edit" class="btn btn-primary btn-sm">Edit</a>
+                            <form action="/posts/<%= post._id %>?_method=DELETE" method="POST" class="d-inline">
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">Delete</button>
+                            </form>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+
+            <!-- Comments Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h3>Comments</h3>
+                </div>
+                <div class="card-body">
+                    <% if (session.userId) { %>
+                        <form action="/posts/<%= post._id %>/comments" method="POST" class="mb-4">
+                            <div class="mb-3">
+                                <textarea class="form-control" name="text" rows="3" required placeholder="Write a comment..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Comment</button>
+                        </form>
+                    <% } else { %>
+                        <div class="alert alert-info">
+                            Please <a href="/auth/login">login</a> to leave a comment.
+                        </div>
+                    <% } %>
+
+                    <% if (post.comments && post.comments.length > 0) { %>
+                        <% post.comments.forEach(comment => { %>
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between">
+                                        <h6 class="card-subtitle mb-2 text-muted">
+                                            <%= comment.user.username %>
+                                        </h6>
+                                        <small class="text-muted">
+                                            <%= new Date(comment.createdAt).toLocaleDateString() %>
+                                        </small>
+                                    </div>
+                                    <p class="card-text"><%= comment.text %></p>
+                                </div>
+                            </div>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="alert alert-info">
+                            No comments yet. Be the first to comment!
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %> 
