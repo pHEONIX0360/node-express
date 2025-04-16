@@ -11,6 +11,7 @@ const app = express();
 // Import routes
 const authRoutes = require('./routes/authRoutes');
 const postRoutes = require('./routes/postRoutes');
+const dashboardRoutes = require('./routes/dashboardRoutes');
 
 // Middleware
 app.use(express.json());
@@ -48,6 +49,7 @@ app.use((req, res, next) => {
 // Routes
 app.use('/auth', authRoutes);
 app.use('/posts', postRoutes);
+app.use('/dashboard', dashboardRoutes);
 
 // Home route
 app.get('/', (req, res) => {
