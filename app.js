@@ -51,6 +51,16 @@ app.use('/auth', authRoutes);
 app.use('/posts', postRoutes);
 app.use('/dashboard', dashboardRoutes);
 
+// Redirect /login to /auth/login
+app.get('/login', (req, res) => {
+    res.redirect('/auth/login');
+});
+
+// Redirect /register to /auth/register
+app.get('/register', (req, res) => {
+    res.redirect('/auth/register');
+});
+
 // Home route
 app.get('/', (req, res) => {
     res.render('index', { title: 'Home' });
